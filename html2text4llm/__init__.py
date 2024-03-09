@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from . import config
 from ._typing import OutCallback
-from .elements import AnchorElement, ListElement
+from .elements import AnchorElement, ListElement, ImgElement
 from .utils import (
     dumb_css_parser,
     element_style,
@@ -102,11 +102,13 @@ class HTML2Text(html.parser.HTMLParser):
         self.start = True
         self.space = False
         self.a: List[AnchorElement] = []
+        self.img: List[ImgElement] = []
         self.astack: List[Optional[Dict[str, Optional[str]]]] = []
         self.maybe_automatic_link: Optional[str] = None
         self.empty_link = False
         self.absolute_url_matcher = re.compile(r"^[a-zA-Z+]+://")
         self.acount = 0
+        self.imgcount = 0
         self.list: List[ListElement] = []
         self.blockquote = 0
         self.pre = False
@@ -539,7 +541,7 @@ class HTML2Text(html.parser.HTMLParser):
                                 self.acount += 1
                                 a_props = AnchorElement(a, self.acount, self.outcount)
                                 self.a.append(a_props)
-                            self.o("][" + str(a_props.count) + "]")
+                            self.o("】[" + str(a_props.count) + "]")
 
         if tag == "img" and start and not self.ignore_images:
             if "src" in attrs and attrs["src"] is not None:
@@ -592,12 +594,12 @@ class HTML2Text(html.parser.HTMLParser):
                     else:
                         i = self.previousIndex(attrs)
                         if i is not None:
-                            a_props = self.a[i]
+                            img_props = self.a[i]
                         else:
-                            self.acount += 1
-                            a_props = AnchorElement(attrs, self.acount, self.outcount)
-                            self.a.append(a_props)
-                        self.o("[" + str(a_props.count) + "]")
+                            self.imgcount += 1
+                            img_props = ImgElement(attrs, self.imgcount)
+                            self.img.append(img_props)
+                        self.o("[Image " + str(img_props.count) + "]")
 
         if tag == "dl" and start:
             self.p()

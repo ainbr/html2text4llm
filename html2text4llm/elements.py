@@ -16,3 +16,10 @@ class ListElement:
     def __init__(self, name: str, num: int):
         self.name = name
         self.num = num
+
+class ImgElement:
+    __slots__ = ["attrs", "count"]
+
+    def __init__(self, attrs: Dict[str, Optional[str]], count: int):
+        self.attrs = attrs
+        self.count = count
