@@ -6,7 +6,7 @@ import sys
 
 import pytest
 
-import html2text
+import html2text4llm
 
 skip = object()
 
@@ -167,7 +167,7 @@ def generate_function_testdata():
 
 @pytest.mark.parametrize("fn,module_args", generate_module_testdata())
 def test_module(fn, module_args):
-    h = html2text.HTML2Text()
+    h = html2text4llm.HTML2Text()
     h.fn = fn
 
     if module_args.pop("google_doc", False):
@@ -212,7 +212,7 @@ def test_command(fn, cmdline_args):
 @pytest.mark.parametrize("fn,func_args", generate_function_testdata())
 def test_function(fn, func_args):
     with open(fn) as inf:
-        actual = html2text.html2text(inf.read(), **func_args)
+        actual = html2text4llm.html2text(inf.read(), **func_args)
     expected = get_baseline(fn)
     assert actual.rstrip() == expected.rstrip()
 
@@ -233,7 +233,7 @@ def test_tag_callback():
         if tag == "b":
             return True
 
-    h = html2text.HTML2Text()
+    h = html2text4llm.HTML2Text()
     h.tag_callback = _skip_certain_tags
     ret = h.handle(
         'this is a <b>txt</b> and this is a <b class="skip">with text</b> and '
@@ -244,7 +244,7 @@ def test_tag_callback():
 
 def test_strong_emptied() -> None:
     """When strong is being set to empty, it should not mark it."""
-    h = html2text.HTML2Text()
+    h = html2text4llm.HTML2Text()
     h.emphasis_mark = "_"
     h.strong_mark = ""
     string = "A <b>B</b> <i>C</i>."

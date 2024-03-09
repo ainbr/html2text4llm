@@ -1,10 +1,10 @@
-import html2text
+import html2text4llm
 
 # See https://github.com/Alir3z4/html2text/issues/163 for more information.
 
 
 def test_newline_on_multiple_calls():
-    h = html2text.HTML2Text()
+    h = html2text4llm.HTML2Text()
     html = "<p>test</p>"
     md1 = h.handle(html)
     md2 = h.handle(html)
