@@ -581,13 +581,16 @@ class HTML2Text(html.parser.HTMLParser):
             # ignore if the image is a spacer
             if "width" in attrs and "height" in attrs:
                 # get leading number from width and height
-                w_match = re.match(r"(\d+)", attrs["width"])
-                h_match = re.match(r"(\d+)", attrs["height"])
-                if w_match and h_match:
-                    w = int(w_match.group(1))
-                    h = int(h_match.group(1))
-                    if w < 3 and h < 3:
-                        return
+                try:
+                    w_match = re.match(r"(\d+)", attrs["width"])
+                    h_match = re.match(r"(\d+)", attrs["height"])
+                    if w_match and h_match:
+                        w = int(w_match.group(1))
+                        h = int(h_match.group(1))
+                        if w < 3 and h < 3:
+                            return
+                except:
+                    pass
                 
             if "src" in attrs and attrs["src"] is not None:
                 if not self.images_to_alt:
