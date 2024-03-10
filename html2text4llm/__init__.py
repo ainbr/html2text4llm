@@ -344,7 +344,7 @@ class HTML2Text(html.parser.HTMLParser):
             and tag not in ["p", "div", "style", "dl", "dt"]
             and (tag != "img" or self.ignore_images)
         ):
-            self.o("[")
+            self.o("【")
             self.maybe_automatic_link = None
             self.empty_link = False
 
@@ -376,7 +376,7 @@ class HTML2Text(html.parser.HTMLParser):
                         self.outtextlist.pop()
                         self.space = False
                         self.o(hn(tag) * "#" + " ")
-                        self.o("[")
+                        self.o("【")
                 else:
                     self.p_p = 0  # don't break up link name
                     self.inheader = False
@@ -526,7 +526,7 @@ class HTML2Text(html.parser.HTMLParser):
         def link_url(self: HTML2Text, link: str, title: str = "") -> None:
             url = urlparse.urljoin(self.baseurl, link)
             title = ' "{}"'.format(title) if title.strip() else ""
-            self.o("]({url}{title})".format(url=escape_md(url), title=title))
+            self.o("】({url}{title})".format(url=escape_md(url), title=title))
 
         if tag == "a" and not self.ignore_links:
             if start:
@@ -543,33 +543,39 @@ class HTML2Text(html.parser.HTMLParser):
                     self.empty_link = True
                     if self.protect_links:
                         attrs["href"] = "<" + attrs["href"] + ">"
+                    
+                    a = attrs
+                    a_props = AnchorElement(a, self.acount, self.outcount)
+                    
+                    i = self.previousIndex(a)
+                    if i is not None:
+                        a_props = self.a[i]
+                    else:
+                        self.a.append(a_props)
+                        self.acount += 1
+                    
+                    self.o(f"【{a_props.count}†")
                 else:
-                    self.astack.append(None)
+                    pass
+                    # self.astack.append(None)
             else:
                 if self.astack:
                     a = self.astack.pop()
+                    self.o(f"】")
                     if self.maybe_automatic_link and not self.empty_link:
                         self.maybe_automatic_link = None
                     elif a:
                         assert a["href"] is not None
                         if self.empty_link:
-                            self.o("[")
                             self.empty_link = False
                             self.maybe_automatic_link = None
+
                         if self.inline_links:
+                            raise "Deprecated (inline_links)"
                             self.p_p = 0
                             title = a.get("title") or ""
                             title = escape_md(title)
                             link_url(self, a["href"], title)
-                        else:
-                            i = self.previousIndex(a)
-                            if i is not None:
-                                a_props = self.a[i]
-                            else:
-                                self.acount += 1
-                                a_props = AnchorElement(a, self.acount, self.outcount)
-                                self.a.append(a_props)
-                            self.o("】[" + str(a_props.count) + "]")
 
         if tag == "img" and start and not self.ignore_images:
             # ignore if the image is a spacer
@@ -618,7 +624,6 @@ class HTML2Text(html.parser.HTMLParser):
                 if self.images_to_alt:
                     self.o(escape_md(alt))
                 else:
-                    self.o("![" + escape_md(alt) + "]")
                     if self.inline_links:
                         href = attrs.get("href") or ""
                         self.o(
@@ -928,7 +933,7 @@ class HTML2Text(html.parser.HTMLParser):
                 self.empty_link = False
                 return
             else:
-                self.o("[")
+                # self.o("【")
                 self.maybe_automatic_link = None
                 self.empty_link = False
 
