@@ -647,6 +647,10 @@ class HTML2Text(html.parser.HTMLParser):
             # Google Docs create sub lists as top level lists
             if not self.list and not self.lastWasList:
                 self.p()
+            
+            if self.list:
+                self.o("\n")
+
             if start:
                 if self.google_doc:
                     list_style = google_list_style(tag_style)
@@ -670,6 +674,7 @@ class HTML2Text(html.parser.HTMLParser):
                     li = self.list[-1]
                 else:
                     li = ListElement("ul", 0)
+                    self.list.append(ListElement("ul", 0))
                 if self.google_doc:
                     self.o("  " * self.google_nest_count(tag_style))
                 else:
