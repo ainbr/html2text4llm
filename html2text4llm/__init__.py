@@ -225,6 +225,34 @@ class HTML2Text(html.parser.HTMLParser):
             if match:
                 return i
         return None
+    
+    def previousImgIndex(self, attrs: Dict[str, Optional[str]]) -> Optional[int]:
+        """
+        :type attrs: dict
+
+        :returns: The index of certain set of attributes (of img) in the
+        self.img list. If the set of attributes is not found, returns None
+        :rtype: int
+        """
+        if "src" not in attrs:
+            return None
+        
+        match = False
+        for i, img in enumerate(self.img):
+            if "src" in img.attrs and img.attrs["src"] == attrs["src"]:
+                if "alt" in img.attrs or "alt" in attrs:
+                    if (
+                        "alt" in img.attrs
+                        and "alt" in attrs
+                        and img.attrs["alt"] == attrs["alt"]
+                    ):
+                        match = True
+                else:
+                    match = True
+
+            if match:
+                return i
+        return None
 
     def handle_emphasis(
         self, start: bool, tag_style: Dict[str, str], parent_style: Dict[str, str]
@@ -544,6 +572,11 @@ class HTML2Text(html.parser.HTMLParser):
                             self.o("】[" + str(a_props.count) + "]")
 
         if tag == "img" and start and not self.ignore_images:
+            # ignore if the image is a spacer
+            if "width" in attrs and "height" in attrs:
+                if int(attrs["width"]) < 3 and int(attrs["height"]) < 3:
+                    return
+                
             if "src" in attrs and attrs["src"] is not None:
                 if not self.images_to_alt:
                     attrs["href"] = attrs["src"]
@@ -592,14 +625,14 @@ class HTML2Text(html.parser.HTMLParser):
                             "(" + escape_md(urlparse.urljoin(self.baseurl, href)) + ")"
                         )
                     else:
-                        i = self.previousIndex(attrs)
+                        i = self.previousImgIndex(attrs)
                         if i is not None:
-                            img_props = self.a[i]
+                            img_props = self.img[i]
                         else:
                             self.imgcount += 1
                             img_props = ImgElement(attrs, self.imgcount)
                             self.img.append(img_props)
-                        self.o("[Image " + str(img_props.count) + "]")
+                        self.o("[Image " + str(img_props.count-1) + "]")
 
         if tag == "dl" and start:
             self.p()
