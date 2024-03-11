@@ -873,9 +873,8 @@ class HTML2Text(html.parser.HTMLParser):
                     self.out(" ")
                 self.space = False
 
-            if self.a and (
-                (self.p_p == 2 and self.links_each_paragraph) or force == "end"
-            ):
+            if self.a and ((self.p_p == 2 and self.links_each_paragraph)):
+                # remove (or force == "end")
                 if force == "end":
                     self.out("\n")
 
