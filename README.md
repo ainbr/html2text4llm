@@ -1,3 +1,9 @@
+# html2text4llm
+
+HTML to OpenAI styled markdown converter.
+
+`pip install -I -U git+https://github.com/ainbr/html2text4llm`
+
 # html2text
 
 [![CI](https://github.com/Alir3z4/html2text/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/Alir3z4/html2text/actions/workflows/main.yml)
