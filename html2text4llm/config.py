@@ -13,7 +13,7 @@ ESCAPE_SNOB = False
 LINKS_EACH_PARAGRAPH = False
 
 # Wrap long lines at position. 0 for no wrapping.
-BODY_WIDTH = 78
+BODY_WIDTH = 0 # Default: 70
 
 # Don't show internal links (href="#local-anchor") -- corresponding link
 # targets won't be visible in the plain text file anyway.
