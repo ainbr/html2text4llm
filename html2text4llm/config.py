@@ -20,7 +20,7 @@ BODY_WIDTH = 78
 SKIP_INTERNAL_LINKS = True
 
 # Use inline, rather than reference, formatting for images and links
-INLINE_LINKS = True
+INLINE_LINKS = False # Default: True
 
 # Protect links from line breaks surrounding them with angle brackets (in
 # addition to their square brackets)
@@ -46,7 +46,7 @@ IGNORE_IMAGES = False
 IMAGES_AS_HTML = False
 IMAGES_TO_ALT = False
 IMAGES_WITH_SIZE = False
-IGNORE_EMPHASIS = False
+IGNORE_EMPHASIS = True # Default: False
 MARK_CODE = False
 DECODE_ERRORS = "strict"
 DEFAULT_IMAGE_ALT = ""
